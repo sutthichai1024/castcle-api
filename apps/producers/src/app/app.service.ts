@@ -21,25 +21,11 @@
  * or have any questions.
  */
 
-import { BullModule } from '@nestjs/bull';
-import { Module } from '@nestjs/common';
-import { BackgroundController } from './app.controller';
-import { AppService } from './app.service';
-import { MessageConsumerService } from './message-consumer.service';
+import { Injectable } from '@nestjs/common';
 
-@Module({
-  imports: [
-    BullModule.forRoot({
-      redis: {
-        host: process.env.REDIS_HOST,
-        port: +process.env.REDIS_PORT
-      }
-    }),
-    BullModule.registerQueue({
-      name: 'message-queue'
-    })
-  ],
-  controllers: [BackgroundController],
-  providers: [AppService, MessageConsumerService]
-})
-export class BackgroundModule {}
+@Injectable()
+export class AppService {
+  getData(): { message: string } {
+    return { message: 'Welcome to producers!' };
+  }
+}

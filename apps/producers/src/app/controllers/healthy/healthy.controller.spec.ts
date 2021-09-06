@@ -21,25 +21,21 @@
  * or have any questions.
  */
 
-import { BullModule } from '@nestjs/bull';
-import { Module } from '@nestjs/common';
-import { BackgroundController } from './app.controller';
-import { AppService } from './app.service';
-import { MessageConsumerService } from './message-consumer.service';
+import { Test, TestingModule } from '@nestjs/testing';
+import { HealthyController } from './healthy.controller';
 
-@Module({
-  imports: [
-    BullModule.forRoot({
-      redis: {
-        host: process.env.REDIS_HOST,
-        port: +process.env.REDIS_PORT
-      }
-    }),
-    BullModule.registerQueue({
-      name: 'message-queue'
-    })
-  ],
-  controllers: [BackgroundController],
-  providers: [AppService, MessageConsumerService]
-})
-export class BackgroundModule {}
+describe('HealthyController', () => {
+  let controller: HealthyController;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [HealthyController]
+    }).compile();
+
+    controller = module.get<HealthyController>(HealthyController);
+  });
+
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
+});

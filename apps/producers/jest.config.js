@@ -21,25 +21,18 @@
  * or have any questions.
  */
 
-import { BullModule } from '@nestjs/bull';
-import { Module } from '@nestjs/common';
-import { BackgroundController } from './app.controller';
-import { AppService } from './app.service';
-import { MessageConsumerService } from './message-consumer.service';
-
-@Module({
-  imports: [
-    BullModule.forRoot({
-      redis: {
-        host: process.env.REDIS_HOST,
-        port: +process.env.REDIS_PORT
-      }
-    }),
-    BullModule.registerQueue({
-      name: 'message-queue'
-    })
-  ],
-  controllers: [BackgroundController],
-  providers: [AppService, MessageConsumerService]
-})
-export class BackgroundModule {}
+module.exports = {
+  displayName: 'producers',
+  preset: '../../jest.preset.js',
+  globals: {
+    'ts-jest': {
+      tsconfig: '<rootDir>/tsconfig.spec.json'
+    }
+  },
+  testEnvironment: 'node',
+  transform: {
+    '^.+\\.[tj]s$': 'ts-jest'
+  },
+  moduleFileExtensions: ['ts', 'js', 'html'],
+  coverageDirectory: '../../coverage/apps/producers'
+};

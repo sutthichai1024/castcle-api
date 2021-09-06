@@ -21,25 +21,31 @@
  * or have any questions.
  */
 
-import { BullModule } from '@nestjs/bull';
-import { Module } from '@nestjs/common';
-import { BackgroundController } from './app.controller';
-import { AppService } from './app.service';
-import { MessageConsumerService } from './message-consumer.service';
+import { Environment as env } from '@castcle-api/environments';
+import {
+  CastLogger,
+  CastLoggerLevel,
+  CastLoggerOptions
+} from '@castcle-api/logger';
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app/app.module';
 
-@Module({
-  imports: [
-    BullModule.forRoot({
-      redis: {
-        host: process.env.REDIS_HOST,
-        port: +process.env.REDIS_PORT
-      }
-    }),
-    BullModule.registerQueue({
-      name: 'message-queue'
-    })
-  ],
-  controllers: [BackgroundController],
-  providers: [AppService, MessageConsumerService]
-})
-export class BackgroundModule {}
+async function bootstrap() {
+  const logger = new CastLogger('Bootstrap', CastLoggerOptions);
+  const app = await NestFactory.create(AppModule, {
+    logger: CastLoggerLevel
+  });
+
+  const port = process.env.PORT || 3342;
+  const prefix = 'producers';
+
+  // For Global
+  app.setGlobalPrefix(prefix);
+
+  await app.listen(port, () => {
+    logger.log('Listening at http://localhost:' + port);
+    logger.log(`Environment at ${env.node_env}`);
+  });
+}
+
+bootstrap();

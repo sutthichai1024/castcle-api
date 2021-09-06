@@ -23,9 +23,10 @@
 
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
-import { BackgroundController } from './app.controller';
+import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MessageConsumerService } from './message-consumer.service';
+import { HealthyController } from './controllers/healthy/healthy.controller';
+import { MessageProducerService } from './message-producer.service';
 
 @Module({
   imports: [
@@ -39,7 +40,7 @@ import { MessageConsumerService } from './message-consumer.service';
       name: 'message-queue'
     })
   ],
-  controllers: [BackgroundController],
-  providers: [AppService, MessageConsumerService]
+  controllers: [AppController, HealthyController],
+  providers: [AppService, MessageProducerService]
 })
-export class BackgroundModule {}
+export class AppModule {}
