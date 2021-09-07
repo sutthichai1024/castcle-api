@@ -21,6 +21,7 @@
  * or have any questions.
  */
 
+import { HttpModule } from '@nestjs/axios';
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
@@ -30,6 +31,7 @@ import { MessageProducerService } from './message-producer.service';
 
 @Module({
   imports: [
+    HttpModule,
     BullModule.forRoot({
       redis: {
         host: process.env.REDIS_HOST,

@@ -21,7 +21,9 @@
  * or have any questions.
  */
 
+import { HttpService } from '@nestjs/axios';
 import { Controller, Get, Query } from '@nestjs/common';
+import { map } from 'rxjs';
 import { AppService } from './app.service';
 import { MessageProducerService } from './message-producer.service';
 
@@ -29,7 +31,8 @@ import { MessageProducerService } from './message-producer.service';
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    private readonly messageProducerService: MessageProducerService
+    private readonly messageProducerService: MessageProducerService,
+    private readonly httpService: HttpService
   ) {}
 
   @Get()
@@ -41,5 +44,12 @@ export class AppController {
   getInvokeMsg(@Query('msg') msg: string) {
     this.messageProducerService.sendMessage(msg);
     return msg;
+  }
+
+  @Get('bg')
+  getBackgroundServiceGreetingMessage() {
+    return this.httpService
+      .get<{ message: string }>(process.env.BACKGROUNDS_SERVICE_HOST)
+      .pipe(map(({ data }) => data));
   }
 }
