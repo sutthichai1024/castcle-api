@@ -22,10 +22,24 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import * as hashtagData from './hashtagData.json';
 
 @Injectable()
 export class AppService {
   getData(): { message: string } {
     return { message: 'Welcome to metadata!' };
+  }
+
+  getAllHashtags(acceptVersion: number,acceptLanguage: string,auth: string): { message: string,payload: any[] } {
+    const tokenAuth = auth.replace('Bearer ','' )
+    const ownToken = 'HS256'
+    if(tokenAuth === ownToken){
+      const lang = acceptLanguage.split('-')
+      const HashtagD = hashtagData.filter(x => x.locale === lang[0].toLowerCase())
+      let msg: string
+      (HashtagD.length !== 0) ? msg = 'Success' : msg = 'Failure'
+      return { message: msg ,payload: [...HashtagD] };
+    }
+    return { message: 'Auth Token not correct' ,payload: [] }
   }
 }

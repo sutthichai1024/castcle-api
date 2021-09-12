@@ -24,8 +24,9 @@
 import { Controller, Get } from '@nestjs/common';
 
 import { AppService } from './app.service';
+import { Headers } from '@nestjs/common';
 
-@Controller()
+@Controller('metadata')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
@@ -33,4 +34,15 @@ export class AppController {
   getData() {
     return this.appService.getData();
   }
+
+  @Get('hashtags')
+  findAllHashtags(@Headers() headers) {
+    if (!headers.authorization){
+      return { "statusCode": 401, "message": "Unauthorized"}
+    }
+    const spiltData =  headers['accept-language'].split(',')
+    return this.appService.getAllHashtags(Number(headers['accept-version']),spiltData[0],headers.authorization);
+  }
 }
+
+
